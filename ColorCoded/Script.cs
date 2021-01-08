@@ -27,7 +27,7 @@ namespace ColorCoded
         /// Gets the number of connnected devices.
         /// </summary>
         /// <returns>The number of connected devices.</returns>
-        [DllImport("JoyShockLibrary")]
+        [DllImport("JoyShockLibrary", CallingConvention = CallingConvention.Cdecl)]
         private static extern int JslConnectDevices();
         /// <summary>
         /// Gets the Device IDs of the number of the specific controllers.
@@ -35,26 +35,26 @@ namespace ColorCoded
         /// <param name="array">The array to fill.</param>
         /// <param name="count">The number of controllers to fill. This can be fetched with JslConnectDevices.</param>
         /// <returns>The number of controllers found.</returns>
-        [DllImport("JoyShockLibrary")]
+        [DllImport("JoyShockLibrary", CallingConvention = CallingConvention.Cdecl)]
         private static extern int JslGetConnectedDeviceHandles(int[] array, int count);
         /// <summary>
         /// Disconnects and Disposes all of the controllers.
         /// </summary>
-        [DllImport("JoyShockLibrary")]
+        [DllImport("JoyShockLibrary", CallingConvention = CallingConvention.Cdecl)]
         private static extern void JslDisconnectAndDisposeAll();
         /// <summary>
         /// Gets the type of the controller.
         /// </summary>
         /// <param name="id">The Device ID of the controller.</param>
         /// <returns>The type of controller for a specific ID.</returns>
-        [DllImport("JoyShockLibrary")]
+        [DllImport("JoyShockLibrary", CallingConvention = CallingConvention.Cdecl)]
         public static extern ControllerType JslGetControllerType(int id);
         /// <summary>
         /// Sets the color of the DualShock 4 or DualSense controller.
         /// </summary>
         /// <param name="id">The Device ID of the controller.</param>
         /// <param name="color">The color to set.</param>
-        [DllImport("JoyShockLibrary")]
+        [DllImport("JoyShockLibrary", CallingConvention = CallingConvention.Cdecl)]
         private static extern void JslSetLightColour(int id, int color);
 
         #endregion
