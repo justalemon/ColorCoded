@@ -16,11 +16,13 @@ My idea in the future is to add support for other Lighting software like Asus Au
 
 First, drag and drop all of the files inside of the 7zip into your **scripts** directory. Then, download [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary/releases) and extract **JSL\x64\JoyShockLibrary.dll** to the root of your game directory.
 
+**WARNING**: If you are using DS4Windows, you need to disable "Enable Output data to DS4" on the Profile Settings and "Hide DS4 Controller" on the Application Settings, then reconnect your controller phisically.
+
 ## Usage
 
 After the script is started, the DualShock 4 or DualSense light bar should start working. There are only two light colors available:
 
-* Normal: Sets the color of the player from the Game (Franklin, Michael and Trevor) or PlayerCompanion (for other Peds, see [this](https://github.com/justalemon/PlayerCompanion/wiki/Using-Custom-HUD-Colors) for instructions)
+* Normal: Sets the color of the player from the Game (Franklin, Michael and Trevor) or PlayerCompanion (for other Peds, see [here](https://github.com/justalemon/PlayerCompanion/wiki/Using-Custom-HUD-Colors) for instructions)
 * Wanted: Flashes Blue and Red, just like in the PS4 version of the game
 
 [appveyor-img]: https://img.shields.io/appveyor/build/justalemon/colorcoded?label=appveyor
