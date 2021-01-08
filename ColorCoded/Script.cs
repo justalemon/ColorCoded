@@ -64,6 +64,7 @@ namespace ColorCoded
         public ColorCoded()
         {
             Tick += ColorCoded_Tick;
+            Aborted += ColorCoded_Aborted;
         }
 
         #endregion
@@ -77,6 +78,7 @@ namespace ColorCoded
         private void ColorCoded_Tick(object sender, EventArgs e)
         {
         }
+        private void ColorCoded_Aborted(object sender, EventArgs e) => JslDisconnectAndDisposeAll();
 
         #endregion
     }
