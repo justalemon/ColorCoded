@@ -1,5 +1,8 @@
 ﻿using GTA;
+using PlayerCompanion;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace ColorCoded
@@ -59,11 +62,37 @@ namespace ColorCoded
 
         #endregion
 
+        #region Fields
+
+        /// <summary>
+        /// The last number of wanted star that the player had.
+        /// </summary>
+        private int lastWanted = 0;
+        /// <summary>
+        /// The last time where the siren color was changed.
+        /// </summary>
+        private int lastSirenChange = 0;
+        /// <summary>
+        /// The last color used.
+        /// </summary>
+        private Color lastUsedColor = Color.Transparent;
+        /// <summary>
+        /// The last time where the device IDs were updated.
+        /// </summary>
+        private int lastUpdateTime = 0;
+        /// <summary>
+        /// The currently known devices.
+        /// </summary>
+        private readonly List<int> devices = new List<int>();
+
+        #endregion
+
         #region Constructor
 
         public ColorCoded()
         {
             UpdateDevices();
+            SetColor(Companion.Colors.Current);
             Tick += ColorCoded_Tick;
             Aborted += ColorCoded_Aborted;
         }
@@ -98,12 +127,63 @@ namespace ColorCoded
             // Done!
             lastUpdateTime = Game.GameTime;
         }
+        private void SetColor(Color color)
+        {
+            if (lastUsedColor == color)
+            {
+                return;
+            }
+
+            lastUsedColor = color;
+
+            foreach (int id in devices)
+            {
+                JslSetLightColour(id, color.ToArgb());
+            }
+        }
+
         #endregion
 
         #region Events
 
         private void ColorCoded_Tick(object sender, EventArgs e)
         {
+            // If the device is
+            if (Game.GameTime > lastUpdateTime + 1000)
+            {
+                //UpdateDevices();
+            }
+
+            // If the player stars had changed, set the correct color
+            int wanted = Game.Player.WantedLevel;
+            if (wanted != lastWanted)
+            {
+                lastWanted = wanted;
+
+                if (wanted == 0)
+                {
+                    SetColor(Companion.Colors.Current);
+                }
+                else
+                {
+                    SetColor(Color.Blue);
+                    lastSirenChange = Game.GameTime;
+                }
+            }
+
+            // Then, change the color for when the player is wanted
+            if (wanted > 0 && Game.GameTime > lastSirenChange + 500)
+            {
+                if (lastUsedColor == Color.Blue)
+                {
+                    SetColor(Color.Red);
+                }
+                else
+                {
+                    SetColor(Color.Blue);
+                }
+                lastSirenChange = Game.GameTime;
+            }
         }
         private void ColorCoded_Aborted(object sender, EventArgs e) => JslDisconnectAndDisposeAll();
 
