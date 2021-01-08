@@ -63,6 +63,7 @@ namespace ColorCoded
 
         public ColorCoded()
         {
+            UpdateDevices();
             Tick += ColorCoded_Tick;
             Aborted += ColorCoded_Aborted;
         }
@@ -71,6 +72,32 @@ namespace ColorCoded
 
         #region Functions
 
+        private void UpdateDevices()
+        {
+            // Clear the currently known devices
+            devices.Clear();
+
+            // Get the number of devices connected
+            int count = JslConnectDevices();
+            // And then get the Device IDs
+            int[] deviceIds = new int[count];
+            JslGetConnectedDeviceHandles(deviceIds, count);
+
+            // Now, time to separate the DualShock 4 and DualSense controllers from the rest
+            foreach (int id in deviceIds)
+            {
+                switch (JslGetControllerType(id))
+                {
+                    case ControllerType.DualShock4:
+                    case ControllerType.DualSense:
+                        devices.Add(id);
+                        break;
+                }
+            }
+
+            // Done!
+            lastUpdateTime = Game.GameTime;
+        }
         #endregion
 
         #region Events
