@@ -113,8 +113,12 @@ namespace ColorCoded
             {
                 File.WriteAllText(path, JsonConvert.SerializeObject(config));
             }
+
+            // Update the list of DS4 and DSense devices
             UpdateDevices();
-            SetColor(Companion.Colors.Current);
+            // Set the color from PlayerCompanion
+            SetColor(Companion.Colors.Current.ChangeSaturation(config.SaturationDS4));
+            // And add the events
             Tick += ColorCoded_Tick;
             Aborted += ColorCoded_Aborted;
         }
@@ -185,7 +189,7 @@ namespace ColorCoded
 
                 if (wanted == 0)
                 {
-                    SetColor(Companion.Colors.Current);
+                    SetColor(Companion.Colors.Current.ChangeSaturation(config.SaturationDS4));
                 }
                 else
                 {
