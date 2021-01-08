@@ -1,8 +1,11 @@
 ﻿using GTA;
+using Newtonsoft.Json;
 using PlayerCompanion;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ColorCoded
@@ -84,6 +87,14 @@ namespace ColorCoded
         /// The currently known devices.
         /// </summary>
         private readonly List<int> devices = new List<int>();
+        /// <summary>
+        /// The current configuration of ColorCoded.
+        /// </summary>
+        private Configuration config = new Configuration();
+        /// <summary>
+        /// The path of the configuration file.
+        /// </summary>
+        private static readonly string path = Path.Combine(new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath, "ColorCoded.json");
 
         #endregion
 
@@ -91,6 +102,17 @@ namespace ColorCoded
 
         public ColorCoded()
         {
+            // If the configuration file exists, load it
+            // If not, create it
+            if (File.Exists(path))
+            {
+                string contents = File.ReadAllText(path);
+                config = JsonConvert.DeserializeObject<Configuration>(contents);  // let the exception crash the script
+            }
+            else
+            {
+                File.WriteAllText(path, JsonConvert.SerializeObject(config));
+            }
             UpdateDevices();
             SetColor(Companion.Colors.Current);
             Tick += ColorCoded_Tick;
@@ -129,13 +151,14 @@ namespace ColorCoded
         }
         private void SetColor(Color color)
         {
+            // If the color has been already set, ignore it
             if (lastUsedColor == color)
             {
                 return;
             }
-
+            // Save the color as last used
             lastUsedColor = color;
-
+            // And push it to all of the DS4 and DSense devices
             foreach (int id in devices)
             {
                 JslSetLightColour(id, color.ToArgb());
@@ -172,7 +195,7 @@ namespace ColorCoded
             }
 
             // Then, change the color for when the player is wanted
-            if (wanted > 0 && Game.GameTime > lastSirenChange + 500)
+            if (wanted > 0 && Game.GameTime > lastSirenChange + config.WantedDelay)
             {
                 if (lastUsedColor == Color.Blue)
                 {
